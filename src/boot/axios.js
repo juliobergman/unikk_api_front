@@ -1,5 +1,11 @@
-import { boot } from 'quasar/wrappers'
-import axios from 'axios'
+import { boot } from "quasar/wrappers";
+import axios from "axios";
+
+axios.defaults.headers.common = {
+  Authorization: "Bearer " + process.env.AUTHORIZATION,
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -7,18 +13,37 @@ import axios from 'axios'
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: 'https://api.example.com' })
+const api = axios.create({
+  baseURL: process.env.API_BASE_URL,
+  withCredentials: true,
+});
 
-export default boot(({ app }) => {
+export default boot(({ app, ssrContext }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
-
-  app.config.globalProperties.$axios = axios
+  app.config.globalProperties.$axios = axios;
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  app.config.globalProperties.$api = api
+  app.config.globalProperties.$api = api;
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
-})
 
-export { api }
+  if (ssrContext) {
+    const cookies = ssrContext.$q.cookies.getAll();
+
+    instance.interceptors.request.use(function (config) {
+      const cookiesSet = Object.keys(cookies).reduce(
+        (prev, curr) => prev + curr + "=" + cookies[curr] + ";",
+        ""
+      );
+
+      if (cookiesSet.length > 0) {
+        config.headers.Cookie = cookiesSet;
+      }
+
+      return config;
+    });
+  }
+});
+
+export { api };
