@@ -1,9 +1,9 @@
 <template>
-  <q-drawer show-if-above v-model="drawer" side="left" bordered>
+  <q-drawer show-if-above v-model="drawer" side="left">
     <q-scroll-area
       style="
-        height: calc(100% - 150px);
-        margin-top: 150px;
+        height: calc(100% - 195px);
+        margin-top: 195px;
         border-right: 1px solid #ddd;
       "
     >
@@ -26,17 +26,25 @@
 
     <q-img
       class="absolute-top"
-      src="http://apiunikk:8080/storage/ui/nav-back.jpg"
-      style="height: 150px"
+      src="http://apiunikk:8080/storage/ui/abstract-001.png"
+      style="height: 195px"
     >
-      <div class="absolute-bottom bg-transparent">
-        <q-avatar size="56px" class="q-mb-sm">
-          <img
-            src="http://apiunikk:8080/storage/factory/avatar/misc/avatar-user.jpg"
-          />
-        </q-avatar>
-        <div class="text-weight-bold">Razvan Stoenescu</div>
-        <div>@rstoenescu</div>
+      <div class="full-width full-height flex flex-center no-margin no-padding">
+        <div class="row full-height">
+          <div class="text-center self-start q-mb-sm q-mt-md col-12">
+            <q-avatar size="75px">
+              <img :src="'http://apiunikk:8080/' + avatar" />
+            </q-avatar>
+          </div>
+          <div class="col-12 text-center">
+            <div class="avatar-name text-center">
+              {{ userName }}
+            </div>
+            <div class="avatar-subtitle text-center q-my-xs">
+              {{ userSubtitle }}
+            </div>
+          </div>
+        </div>
       </div>
     </q-img>
   </q-drawer>
@@ -68,7 +76,7 @@ const items = [
   {
     title: "Workgroup",
     icon: "people_alt",
-    to: "users",
+    to: "workgroup",
   },
   // {
   //   title: "Charts",
@@ -85,11 +93,11 @@ const items = [
     icon: "track_changes",
     to: "target",
   },
-  {
-    title: "Financial",
-    icon: "monetization_on",
-    to: "financialStatement",
-  },
+  // {
+  //   title: "Financial",
+  //   icon: "monetization_on",
+  //   to: "financialStatement",
+  // },
   {
     title: "Contacts",
     icon: "contacts",
@@ -103,4 +111,8 @@ let drawer = computed({
     $store.commit("app/toggleLeftDrawer", val);
   },
 });
+
+const avatar = $store.state.user.user.profile_pic;
+const userName = $store.state.user.user.name;
+const userSubtitle = $store.state.user.currentMembership.job_title;
 </script>

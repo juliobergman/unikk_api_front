@@ -1,5 +1,5 @@
 <template>
-  <div>Dashboard</div>
+  <q-page padding> Dashboard </q-page>
 </template>
 
 <script setup>

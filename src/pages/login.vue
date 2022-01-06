@@ -98,6 +98,25 @@ let userAuth = computed({
   },
 });
 
+let user = computed({
+  get: () => $store.state.user.user,
+  set: (val) => {
+    $store.commit("user/setUser", val);
+  },
+});
+let currentMembership = computed({
+  get: () => $store.state.user.currentMembership,
+  set: (val) => {
+    $store.commit("user/setCurrentMembership", val);
+  },
+});
+let userMemberships = computed({
+  get: () => $store.state.user.userMemberships,
+  set: (val) => {
+    $store.commit("user/setUserMemberships", val);
+  },
+});
+
 let isPwd = ref(true);
 let email = ref("");
 let password = ref("");
@@ -125,6 +144,9 @@ function login() {
         bar.stop();
         loading.value = false;
         userAuth.value = true;
+        user.value = response.data.user;
+        currentMembership.value = response.data.currentMembership;
+        userMemberships.value = response.data.userMemberships;
         Cookies.set("user_authorization", true);
         $router.push({ name: "dashboard" });
       }

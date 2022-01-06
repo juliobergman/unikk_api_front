@@ -4,14 +4,16 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          Title
+        <q-toolbar-title class="flex">
+          <div class="row">
+            <div class="col flex items-center q-mr-md">
+              <ui-nav-logo />
+            </div>
+            <div class="col font-weight-regular">Front</div>
+          </div>
         </q-toolbar-title>
 
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        <q-btn dense flat round icon="settings" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
 
@@ -46,3 +48,4 @@ function toggleRightDrawer() {
   rightDrawerOpen.value = !rightDrawerOpen.value;
 }
 </script>
+<style scoped></style>
