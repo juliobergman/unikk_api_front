@@ -33,6 +33,10 @@ import { useStore } from "vuex";
 
 const $store = useStore();
 
+if (!$store.state.user.authorized) {
+  $store.dispatch("user/setUser");
+}
+
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
 

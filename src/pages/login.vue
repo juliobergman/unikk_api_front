@@ -73,6 +73,7 @@
 <script setup>
 import { ref } from "vue";
 import { api } from "boot/axios";
+import { Platform } from "quasar";
 
 import { computed } from "vue";
 import { useStore } from "vuex";
@@ -83,6 +84,8 @@ import { Cookies } from "quasar";
 const AjaxBar = ref(null);
 const $store = useStore();
 const $router = useRouter();
+const device =
+  Platform.is.name + "-" + Platform.is.platform + "-" + Platform.is.version;
 
 let loading = computed({
   get: () => $store.state.loading,
@@ -95,6 +98,13 @@ let userAuth = computed({
   get: () => $store.state.user.authorized,
   set: (val) => {
     $store.commit("user/setAuth", val);
+  },
+});
+
+let userToken = computed({
+  get: () => $store.state.user.token,
+  set: (val) => {
+    $store.commit("user/setToken", val);
   },
 });
 
@@ -138,16 +148,19 @@ function login() {
       remember: remember.value,
       email: email.value,
       password: password.value,
+      device: device,
     })
     .then((response) => {
       if (response.status === 200) {
         bar.stop();
         loading.value = false;
         userAuth.value = true;
+        userToken.value = response.data.token;
         user.value = response.data.user;
         currentMembership.value = response.data.currentMembership;
         userMemberships.value = response.data.userMemberships;
-        Cookies.set("user_authorization", true);
+        Cookies.set("user_authorization", response.data.auth);
+        Cookies.set("user_token", response.data.token);
         $router.push({ name: "dashboard" });
       }
     })

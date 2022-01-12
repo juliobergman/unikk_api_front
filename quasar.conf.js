@@ -77,6 +77,17 @@ module.exports = configure(function (ctx) {
       },
       port: 8080,
       open: true, // opens browser window automatically
+      proxy: {
+        // proxy all requests starting with /sanctum to jsonplaceholder
+        "/sanctum": {
+          target: process.env.API_BASE_URL,
+          changeOrigin: true,
+          secure: false,
+          pathRewrite: {
+            "^/sanctum": "",
+          },
+        },
+      },
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -95,7 +106,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Cookies"],
+      plugins: ["Dialog", "Cookies"],
     },
 
     // animations: 'all', // --- includes all animations

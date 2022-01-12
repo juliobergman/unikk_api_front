@@ -1,11 +1,25 @@
 import { Cookies } from "quasar";
-/**
- * Auth middleware example.
- */
-export function auth(/* { to, from, next, store } */ { next }) {
-  let auth = Cookies.get("user_authorization");
-  if (!auth) {
-    return next({ name: "login" });
-  }
+import { api } from "src/boot/axios";
+import { Dialog } from "quasar";
+
+export async function auth({ next, store }) {
+  let token = Cookies.get("user_token");
+  await api
+    .get("/api/user/auth", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+    .catch((error) => {
+      Dialog.create({
+        dark: true,
+        title: "Alert",
+        message: "Some message",
+        persistent: true,
+      });
+
+      return next({ name: "login" });
+    });
+
   return next();
 }

@@ -119,10 +119,30 @@ let drawer = computed({
     $store.commit("app/toggleLeftDrawer", val);
   },
 });
+let avatar = computed({
+  get: () => $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png",
+  set: (val) => {
+    $store.commit("app/toggleLeftDrawer", val);
+  },
+});
+let userName = computed({
+  get: () => $store.state.user.user.name || "User Name",
+  set: (val) => {
+    $store.commit("app/toggleLeftDrawer", val);
+  },
+});
+let userSubtitle = computed({
+  get: () => $store.state.user.currentMembership.job_title || "Job Title",
+  set: (val) => {
+    $store.commit("app/toggleLeftDrawer", val);
+  },
+});
 
-const avatar =
-  $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png";
-const userName = $store.state.user.user.name || "User Name";
-const userSubtitle =
-  $store.state.user.currentMembership.job_title || "Job Title";
+
+
+// const avatar =
+//   $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png";
+// const userName = $store.state.user.user.name || "User Name";
+// const userSubtitle =
+//   $store.state.user.currentMembership.job_title || "Job Title";
 </script>

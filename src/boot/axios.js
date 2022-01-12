@@ -2,7 +2,6 @@ import { boot } from "quasar/wrappers";
 import axios from "axios";
 
 axios.defaults.headers.common = {
-  Authorization: "Bearer " + process.env.AUTHORIZATION,
   Accept: "application/json",
   "Content-Type": "application/json",
 };
