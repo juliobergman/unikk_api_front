@@ -120,7 +120,8 @@ let drawer = computed({
   },
 });
 let avatar = computed({
-  get: () => $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png",
+  get: () =>
+    $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png",
   set: (val) => {
     $store.commit("app/toggleLeftDrawer", val);
   },
@@ -137,8 +138,6 @@ let userSubtitle = computed({
     $store.commit("app/toggleLeftDrawer", val);
   },
 });
-
-
 
 // const avatar =
 //   $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png";
