@@ -8,12 +8,14 @@
       "
     >
       <q-list padding>
+        <!-- :active="item.active" -->
         <q-item
           :to="item.to"
           v-for="(item, idx) in items"
           :key="idx"
           clickable
           v-ripple
+          active-class="text-secondary"
         >
           <q-item-section avatar>
             <q-icon :name="item.icon" />
@@ -67,42 +69,48 @@ const items = [
     title: "Dashboard",
     icon: "dashboard",
     to: "dashboard",
+    active: false,
   },
   {
     title: "Company",
     icon: "domain",
     to: "company",
+    active: true,
   },
   {
     title: "Workgroup",
     icon: "people_alt",
     to: "workgroup",
+    active: false,
+  },
+  {
+    title: "Private Equity Funds",
+    icon: "directions_boat",
+    to: "pecc",
+    active: false,
+  },
+  {
+    title: "Targets",
+    icon: "track_changes",
+    to: "target",
+    active: false,
+  },
+  {
+    title: "Contacts",
+    icon: "contacts",
+    to: "contact",
+    active: false,
   },
   // {
   //   title: "Charts",
   //   icon: "analytics",
   //   to: "charts",
   // },
-  {
-    title: "Private Equity Funds",
-    icon: "directions_boat",
-    to: "pecc",
-  },
-  {
-    title: "Targets",
-    icon: "track_changes",
-    to: "target",
-  },
   // {
   //   title: "Financial",
   //   icon: "monetization_on",
   //   to: "financialStatement",
   // },
-  {
-    title: "Contacts",
-    icon: "contacts",
-    to: "contact",
-  },
 ];
 
 let drawer = computed({
@@ -112,7 +120,9 @@ let drawer = computed({
   },
 });
 
-const avatar = $store.state.user.user.profile_pic;
-const userName = $store.state.user.user.name;
-const userSubtitle = $store.state.user.currentMembership.job_title;
+const avatar =
+  $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png";
+const userName = $store.state.user.user.name || "User Name";
+const userSubtitle =
+  $store.state.user.currentMembership.job_title || "Job Title";
 </script>

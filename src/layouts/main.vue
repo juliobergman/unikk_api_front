@@ -18,11 +18,7 @@
     </q-header>
 
     <ui-left-drawer :open="leftDrawerOpen" />
-
-    <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered>
-      <q-btn icon="close" @click="toggleRightDrawer"></q-btn>
-      <!-- drawer content -->
-    </q-drawer>
+    <ui-right-drawer :open="rightDrawerOpen" />
 
     <q-page-container>
       <router-view />
@@ -45,7 +41,7 @@ function toggleLeftDrawer() {
 }
 
 function toggleRightDrawer() {
-  rightDrawerOpen.value = !rightDrawerOpen.value;
+  $store.commit("app/toggleRightDrawer");
 }
 </script>
 <style scoped></style>
