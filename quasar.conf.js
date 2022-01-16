@@ -94,6 +94,7 @@ module.exports = configure(function (ctx) {
     framework: {
       config: {},
       all: "auto",
+      dark: "true", // or Boolean true/false
       // autoImportComponentCase: "combined",
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack

@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 
 import app from "./app";
 import user from "./user";
+import company from "./company";
 
 /*
  * If not building with SSR mode, you can
@@ -28,6 +29,7 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       app,
       user,
+      company,
     },
 
     // enable strict mode (adds overhead!)

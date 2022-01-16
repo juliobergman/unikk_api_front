@@ -114,6 +114,14 @@ let user = computed({
     $store.commit("user/setUser", val);
   },
 });
+
+let company = computed({
+  get: () => $store.state.company,
+  set: (val) => {
+    $store.commit("company/setCompany", val);
+  },
+});
+
 let currentMembership = computed({
   get: () => $store.state.user.currentMembership,
   set: (val) => {
@@ -157,6 +165,7 @@ function login() {
         userAuth.value = true;
         userToken.value = response.data.token;
         user.value = response.data.user;
+        company.value = response.data.company;
         currentMembership.value = response.data.currentMembership;
         userMemberships.value = response.data.userMemberships;
         Cookies.set("user_authorization", response.data.auth);
