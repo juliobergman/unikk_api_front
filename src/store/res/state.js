@@ -1,6 +1,6 @@
 export default function () {
   return {
-    countries: {},
-    currencies: {},
+    countries: [],
+    currencies: [],
   };
 }

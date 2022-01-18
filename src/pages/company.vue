@@ -1,212 +1,218 @@
 <template>
   <q-page class="q-pa-xl">
-    <q-form @validation-error="formError" @validation-success="formSuccess">
-      <div class="row">
-        <div class="col-12 col-sm-4">
-          <q-img
-            width="100%"
-            :ratio="1"
-            :src="$store.state.app.baseurl + company.logo"
-            spinner-color="white"
-          >
-          </q-img>
-        </div>
-        <div
-          :class="
-            $mobile ? 'col-12 col-sm-8 q-pt-xl' : 'col-12 col-sm-8 q-pl-xl'
-          "
+    <div class="row">
+      <div class="col-12 col-sm-4">
+        <q-img
+          width="100%"
+          :ratio="1"
+          :src="$store.state.app.baseurl + company.logo"
+          spinner-color="white"
         >
-          <div class="row q-mb-md">
-            <div class="col-12">
-              <div class="row justify-between" v-show="!edit">
-                <div class="col-auto">
-                  <div class="text-h5">{{ company.name }}</div>
-                  <div v-if="company.sector">{{ company.sector }}</div>
-                </div>
-                <q-avatar size="34px" square v-if="company.country">
-                  <q-img
-                    :ratio="4 / 3"
-                    :src="
-                      $store.state.app.baseurl +
-                      '/storage/factory/flags/4x3/' +
-                      computedCompany.country +
-                      '.svg'
-                    "
-                  />
-                </q-avatar>
+        </q-img>
+      </div>
+      <div
+        :class="$mobile ? 'col-12 col-sm-8 q-pt-xl' : 'col-12 col-sm-8 q-pl-xl'"
+      >
+        <div class="row q-mb-md">
+          <div class="col-12">
+            <div class="row justify-between" v-show="!edit">
+              <div class="col-auto">
+                <div class="text-h5">{{ company.name }}</div>
+                <div v-if="company.sector">{{ company.sector }}</div>
               </div>
-              <div class="row" v-show="edit">
-                <div class="col-12">
-                  <q-input
-                    label-color="accent"
-                    v-model="company.name"
-                    label="Company Name"
-                    class="text-h5"
-                  />
-                  <q-input
-                    label-color="accent"
-                    v-model="company.sector"
-                    label="Sector"
-                  />
-                </div>
+              <q-avatar size="34px" square v-if="company.country">
+                <q-img
+                  class="rounded-borders"
+                  :ratio="4 / 3"
+                  :src="
+                    $store.state.app.baseurl +
+                    '/storage/factory/flags/4x3/' +
+                    computedCompany.country +
+                    '.svg'
+                  "
+                />
+              </q-avatar>
+            </div>
+            <div class="row" v-show="edit">
+              <div class="col-12">
+                <q-input
+                  label-color="accent"
+                  v-model="company.name"
+                  label="Company Name"
+                  class="text-h5"
+                />
+                <q-input
+                  label-color="accent"
+                  v-model="company.sector"
+                  label="Sector"
+                />
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12 col-sm-6">
-              <q-input
-                :label-color="edit ? 'accent' : ''"
-                :borderless="!edit"
-                v-model="company.phone"
-                label="Phone"
-                :readonly="!edit"
-              />
-              <q-input
-                :label-color="edit ? 'accent' : ''"
-                :borderless="!edit"
-                v-model="company.email"
-                label="Email"
-                :readonly="!edit"
-              />
-              <q-input
-                borderless
-                v-show="!edit"
-                v-model="company.currency_name"
-                label="Currency"
-                readonly
-              />
-
-              <q-select
-                label-color="accent"
-                v-show="edit"
-                v-model="company.currency_id"
-                option-value="id"
-                option-label="name"
-                emit-value
-                map-options
-                use-input
-                input-debounce="0"
-                label="Currency"
-                :options="currencies"
-                @filter="filterCurrency"
-                :rules="[required]"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section class="text-grey">
-                      {{
-                        "(" +
-                        scope.opt.code +
-                        ") " +
-                        scope.opt.name +
-                        " (" +
-                        scope.opt.symbol +
-                        ")"
-                      }}
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No results
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-
-              <q-input
-                :label-color="edit ? 'accent' : ''"
-                :borderless="!edit"
-                v-model="company.shares"
-                label="Number of Shares"
-                :readonly="!edit"
-              />
-              <q-input
-                :label-color="edit ? 'accent' : ''"
-                :borderless="!edit"
-                v-model="company.taxrate"
-                label="Effective Tax Rate"
-                :readonly="!edit"
-              />
-            </div>
-            <div class="col-12 col-sm-6">
-              <q-input
-                :borderless="!edit"
-                v-model="company.country_region"
-                label="Region"
-                readonly
-              />
-              <q-input
-                :borderless="!edit"
-                v-model="company.country_subregion"
-                label="Subregion"
-                readonly
-              />
-              <q-input
-                borderless
-                v-model="company.country_name"
-                label="Country"
-                v-show="!edit"
-              />
-              <q-select
-                label-color="accent"
-                v-show="edit"
-                v-model="company.country"
-                option-value="iso2"
-                option-label="name"
-                emit-value
-                map-options
-                use-input
-                input-debounce="0"
-                label="Country"
-                :options="countries"
-                @filter="filterCountry"
-                :rules="[required]"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No results
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-              <q-input
-                :label-color="edit ? 'accent' : ''"
-                :borderless="!edit"
-                v-model="company.city"
-                label="City"
-                :readonly="!edit"
-              />
-              <q-input
-                :label-color="edit ? 'accent' : ''"
-                :borderless="!edit"
-                autogrow
-                v-model="company.address"
-                label="Address"
-                :readonly="!edit"
-              />
             </div>
           </div>
         </div>
-        <div class="col-12 q-py-xl" v-for="(it, idx) in 5" :key="idx">
-          {{ company.info }}
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <q-input
+              :label-color="edit ? 'accent' : ''"
+              :borderless="!edit"
+              v-model="company.phone"
+              label="Phone"
+              :readonly="!edit"
+            />
+            <q-input
+              :label-color="edit ? 'accent' : ''"
+              :borderless="!edit"
+              v-model="company.email"
+              label="Email"
+              :readonly="!edit"
+            />
+            <q-input
+              borderless
+              v-show="!edit"
+              v-model="company.currency_name"
+              label="Currency"
+              readonly
+            />
+
+            <q-select
+              label-color="accent"
+              v-show="edit"
+              v-model="company.currency_id"
+              option-value="id"
+              option-label="name"
+              emit-value
+              map-options
+              label="Currency"
+              :options="$store.state.res.currencies"
+              :rules="[required]"
+            >
+              <!-- @filter="filterCurrency" -->
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section class="text-grey">
+                    {{
+                      "(" +
+                      scope.opt.code +
+                      ") " +
+                      scope.opt.name +
+                      " (" +
+                      scope.opt.symbol +
+                      ")"
+                    }}
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+            <q-input
+              :label-color="edit ? 'accent' : ''"
+              :borderless="!edit"
+              v-model="company.shares"
+              label="Number of Shares"
+              :readonly="!edit"
+            />
+            <q-input
+              :label-color="edit ? 'accent' : ''"
+              :borderless="!edit"
+              v-model="company.taxrate"
+              label="Effective Tax Rate"
+              :readonly="!edit"
+            />
+          </div>
+          <div class="col-12 col-sm-6">
+            <q-input
+              :borderless="!edit"
+              v-model="company.country_region"
+              label="Region"
+              readonly
+            />
+            <q-input
+              :borderless="!edit"
+              v-model="company.country_subregion"
+              label="Subregion"
+              readonly
+            />
+            <q-input
+              borderless
+              v-model="company.country_name"
+              label="Country"
+              v-show="!edit"
+              readonly
+            />
+            <q-select
+              label-color="accent"
+              v-show="edit"
+              v-model="company.country"
+              option-value="iso2"
+              option-label="name"
+              emit-value
+              map-options
+              label="Country"
+              :options="$store.state.res.countries"
+              :rules="[required]"
+            >
+              <!-- @filter="filterCountry" -->
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <q-input
+              :label-color="edit ? 'accent' : ''"
+              :borderless="!edit"
+              v-model="company.city"
+              label="City"
+              :readonly="!edit"
+            />
+            <q-input
+              :label-color="edit ? 'accent' : ''"
+              :borderless="!edit"
+              autogrow
+              v-model="company.address"
+              label="Address"
+              :readonly="!edit"
+            />
+          </div>
         </div>
       </div>
-      <q-page-sticky position="bottom-right" :offset="[18, 18]">
-        <q-fab
+      <div class="col-12 q-py-xl">
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.info"
+          label="Company Information"
+          :readonly="!edit"
+        />
+      </div>
+    </div>
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-fab
+        color="primary"
+        icon="keyboard_arrow_left"
+        direction="left"
+        flat
+        @update:model-value="toggleEdit"
+      >
+        <q-fab-action
           color="primary"
-          icon="keyboard_arrow_left"
-          direction="left"
-          flat
-          @update:model-value="toggleEdit"
-        >
-          <q-fab-action color="primary" @click="updateCompany" icon="save" />
-        </q-fab>
-      </q-page-sticky>
-    </q-form>
+          @click="updateCompany"
+          icon="save"
+          :disable="formValid"
+        />
+      </q-fab>
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -253,15 +259,10 @@ let currentMembership = computed({
 let computedCompany = computed({
   get: () => $store.state.company,
 });
-// watchEffect(() => companyData(currentMembership.value));
-
 // Edit
 let company = ref({});
-let countriesData = ref([]);
-let countries = ref([]);
-let currenciesData = ref([]);
-let currencies = ref([]);
 let edit = ref(false);
+let formValid = ref(false);
 
 function toggleEdit(payload) {
   if (!payload) companyData();
@@ -273,6 +274,7 @@ function save() {
 
 function companyData() {
   if (currentMembership.value.company_id) {
+    $q.loading.show();
     api
       .get("api/company/show/" + currentMembership.value.company_id, {
         headers: {
@@ -285,7 +287,11 @@ function companyData() {
           $store.commit("company/setCompany", response.data);
         }
       })
+      .then(() => {
+        $q.loading.hide();
+      })
       .catch((error) => {
+        $q.loading.hide();
         Dialog.create({
           dark: false,
           color: "negative",
@@ -298,91 +304,42 @@ function companyData() {
 }
 watchEffect(() => companyData(currentMembership.value));
 
-function getCountriesData() {
-  api
-    .get("api/country", {
-      headers: {
-        Authorization: "Bearer " + userToken.value,
-      },
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        countriesData.value = response.data;
-        countries.value = response.data;
-      }
-    })
-    .catch((error) => {
-      Dialog.create({
-        dark: false,
-        color: "negative",
-        title: "Error",
-        message: error.response.data.message,
-        persistent: true,
-      });
-    });
-}
-getCountriesData();
+// function filterCountry(val, update) {
+//   if (val === "") {
+//     update(() => {
+//       countries.value = countriesData.value;
+//     });
+//     return;
+//   }
 
-function filterCountry(val, update) {
-  if (val === "") {
-    update(() => {
-      countries.value = countriesData.value;
-    });
-    return;
-  }
+//   update(() => {
+//     const needle = val.toLowerCase();
+//     const c = countriesData.value;
+//     countries.value = c.filter(
+//       (v) => v.name.toLowerCase().indexOf(needle) > -1
+//     );
+//   });
+// }
 
-  update(() => {
-    const needle = val.toLowerCase();
-    const c = countriesData.value;
-    countries.value = c.filter(
-      (v) => v.name.toLowerCase().indexOf(needle) > -1
-    );
-  });
-}
+// function filterCurrency(val, update) {
+//   if (val === "") {
+//     update(() => {
+//       currencies.value = currenciesData.value;
+//     });
+//     return;
+//   }
 
-function getCurrenciesData() {
-  api
-    .get("api/currency", {
-      headers: {
-        Authorization: "Bearer " + userToken.value,
-      },
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        currenciesData.value = response.data;
-        currencies.value = response.data;
-      }
-    })
-    .catch((error) => {
-      Dialog.create({
-        dark: false,
-        color: "negative",
-        title: "Error",
-        message: error.response.data.message,
-        persistent: true,
-      });
-    });
-}
-getCurrenciesData();
-
-function filterCurrency(val, update) {
-  if (val === "") {
-    update(() => {
-      currencies.value = currenciesData.value;
-    });
-    return;
-  }
-
-  update(() => {
-    const needle = val.toLowerCase();
-    const c = currenciesData.value;
-    currencies.value = c.filter(
-      (v) => v.name.toLowerCase().indexOf(needle) > -1
-    );
-  });
-}
+//   update(() => {
+//     const needle = val.toLowerCase();
+//     const c = currenciesData.value;
+//     currencies.value = c.filter(
+//       (v) => v.name.toLowerCase().indexOf(needle) > -1
+//     );
+//   });
+// }
 
 function updateCompany() {
+  $q.loading.show();
   const data = company.value;
   api
     .post("api/company/update/" + currentMembership.value.company_id, data, {
@@ -402,7 +359,11 @@ function updateCompany() {
         });
       }
     })
+    .then(() => {
+      $q.loading.hide();
+    })
     .catch((error) => {
+      $q.loading.hide();
       Dialog.create({
         dark: false,
         color: "negative",
