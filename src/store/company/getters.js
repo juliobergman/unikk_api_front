@@ -44,6 +44,12 @@ export function info(state) {
 export function logo(state) {
   return state.logo;
 }
+export function shares(state) {
+  return state.shares;
+}
+export function taxrate(state) {
+  return state.taxrate;
+}
 export function currency_name(state) {
   return state.currency_name;
 }
@@ -55,4 +61,16 @@ export function currency_code(state) {
 }
 export function country_name(state) {
   return state.country_name;
+}
+export function country_region(state) {
+  return state.country_region;
+}
+export function country_subregion(state) {
+  return state.country_subregion;
+}
+export function country_latitude(state) {
+  return state.country_latitude;
+}
+export function country_longitude(state) {
+  return state.country_longitude;
 }

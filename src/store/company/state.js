@@ -13,9 +13,15 @@ export default function () {
     website: "",
     info: "",
     logo: "",
+    shares: "",
+    taxrate: "",
     currency_name: "",
     currency_symbol: "",
     currency_code: "",
     country_name: "",
+    country_region: "",
+    country_subregion: "",
+    country_latitude: "",
+    country_longitude: "",
   };
 }

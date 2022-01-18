@@ -1,33 +1,239 @@
 <template>
   <q-page class="q-pa-xl">
-    <div class="row">
-      <div class="col-12 col-md-4">
-        <q-img
-          width="100%"
-          :ratio="1"
-          src="http://apiunikk:8080/storage/ui/abstract-001.png"
-          spinner-color="white"
+    <q-form @validation-error="formError" @validation-success="formSuccess">
+      <div class="row">
+        <div class="col-12 col-sm-4">
+          <q-img
+            width="100%"
+            :ratio="1"
+            :src="$store.state.app.baseurl + company.logo"
+            spinner-color="white"
+          >
+          </q-img>
+        </div>
+        <div
+          :class="
+            $mobile ? 'col-12 col-sm-8 q-pt-xl' : 'col-12 col-sm-8 q-pl-xl'
+          "
         >
-        </q-img>
+          <div class="row q-mb-md">
+            <div class="col-12">
+              <div class="row justify-between" v-show="!edit">
+                <div class="col-auto">
+                  <div class="text-h5">{{ company.name }}</div>
+                  <div v-if="company.sector">{{ company.sector }}</div>
+                </div>
+                <q-avatar size="34px" square v-if="company.country">
+                  <q-img
+                    :ratio="4 / 3"
+                    :src="
+                      $store.state.app.baseurl +
+                      '/storage/factory/flags/4x3/' +
+                      computedCompany.country +
+                      '.svg'
+                    "
+                  />
+                </q-avatar>
+              </div>
+              <div class="row" v-show="edit">
+                <div class="col-12">
+                  <q-input
+                    label-color="accent"
+                    v-model="company.name"
+                    label="Company Name"
+                    class="text-h5"
+                  />
+                  <q-input
+                    label-color="accent"
+                    v-model="company.sector"
+                    label="Sector"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-sm-6">
+              <q-input
+                :label-color="edit ? 'accent' : ''"
+                :borderless="!edit"
+                v-model="company.phone"
+                label="Phone"
+                :readonly="!edit"
+              />
+              <q-input
+                :label-color="edit ? 'accent' : ''"
+                :borderless="!edit"
+                v-model="company.email"
+                label="Email"
+                :readonly="!edit"
+              />
+              <q-input
+                borderless
+                v-show="!edit"
+                v-model="company.currency_name"
+                label="Currency"
+                readonly
+              />
+
+              <q-select
+                label-color="accent"
+                v-show="edit"
+                v-model="company.currency_id"
+                option-value="id"
+                option-label="name"
+                emit-value
+                map-options
+                use-input
+                input-debounce="0"
+                label="Currency"
+                :options="currencies"
+                @filter="filterCurrency"
+                :rules="[required]"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section class="text-grey">
+                      {{
+                        "(" +
+                        scope.opt.code +
+                        ") " +
+                        scope.opt.name +
+                        " (" +
+                        scope.opt.symbol +
+                        ")"
+                      }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No results
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
+              <q-input
+                :label-color="edit ? 'accent' : ''"
+                :borderless="!edit"
+                v-model="company.shares"
+                label="Number of Shares"
+                :readonly="!edit"
+              />
+              <q-input
+                :label-color="edit ? 'accent' : ''"
+                :borderless="!edit"
+                v-model="company.taxrate"
+                label="Effective Tax Rate"
+                :readonly="!edit"
+              />
+            </div>
+            <div class="col-12 col-sm-6">
+              <q-input
+                :borderless="!edit"
+                v-model="company.country_region"
+                label="Region"
+                readonly
+              />
+              <q-input
+                :borderless="!edit"
+                v-model="company.country_subregion"
+                label="Subregion"
+                readonly
+              />
+              <q-input
+                borderless
+                v-model="company.country_name"
+                label="Country"
+                v-show="!edit"
+              />
+              <q-select
+                label-color="accent"
+                v-show="edit"
+                v-model="company.country"
+                option-value="iso2"
+                option-label="name"
+                emit-value
+                map-options
+                use-input
+                input-debounce="0"
+                label="Country"
+                :options="countries"
+                @filter="filterCountry"
+                :rules="[required]"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No results
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+              <q-input
+                :label-color="edit ? 'accent' : ''"
+                :borderless="!edit"
+                v-model="company.city"
+                label="City"
+                :readonly="!edit"
+              />
+              <q-input
+                :label-color="edit ? 'accent' : ''"
+                :borderless="!edit"
+                autogrow
+                v-model="company.address"
+                label="Address"
+                :readonly="!edit"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-12 q-py-xl" v-for="(it, idx) in 5" :key="idx">
+          {{ company.info }}
+        </div>
       </div>
-      <div class="col-12 col-md-8 q-px-xl">
-        <q-btn @click="company"> get </q-btn>
-        <div class="text-h5">{{ name }}</div>
-        <div>{{ name }}</div>
-      </div>
-    </div>
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-fab
+          color="primary"
+          icon="keyboard_arrow_left"
+          direction="left"
+          flat
+          @update:model-value="toggleEdit"
+        >
+          <q-fab-action color="primary" @click="updateCompany" icon="save" />
+        </q-fab>
+      </q-page-sticky>
+    </q-form>
   </q-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { api } from "boot/axios";
-import { computed } from "vue";
+import { useQuasar, Dialog } from "quasar";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
+// Platform
+import { Platform } from "quasar";
+let $mobile = computed({
+  get: () => (Platform.is.mobile ? true : false),
+});
+
+const $q = useQuasar();
 const $store = useStore();
 const $router = useRouter();
+
+let loading = computed({
+  get: () => $store.state.loading,
+  set: (val) => {
+    $store.commit("loading", val);
+  },
+});
+loading.value = false;
 
 let userToken = computed({
   get: () => $store.state.user.token,
@@ -43,56 +249,181 @@ let currentMembership = computed({
   },
 });
 
-let id = ref("");
-let currency_id = ref("");
-let name = ref("");
-let type = ref("");
-let address = ref("");
-let city = ref("");
-let sector = ref("");
-let country = ref("");
-let phone = ref("");
-let email = ref("");
-let website = ref("");
-let info = ref("");
-let logo = ref("");
-let currency_name = ref("");
-let currency_symbol = ref("");
-let currency_code = ref("");
-let country_name = ref("");
+// Company Data
+let computedCompany = computed({
+  get: () => $store.state.company,
+});
+// watchEffect(() => companyData(currentMembership.value));
 
-function company() {
+// Edit
+let company = ref({});
+let countriesData = ref([]);
+let countries = ref([]);
+let currenciesData = ref([]);
+let currencies = ref([]);
+let edit = ref(false);
+
+function toggleEdit(payload) {
+  if (!payload) companyData();
+  edit.value = payload;
+}
+function save() {
+  console.log(company.value);
+}
+
+function companyData() {
+  if (currentMembership.value.company_id) {
+    api
+      .get("api/company/show/" + currentMembership.value.company_id, {
+        headers: {
+          Authorization: "Bearer " + userToken.value,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          company.value = response.data;
+          $store.commit("company/setCompany", response.data);
+        }
+      })
+      .catch((error) => {
+        Dialog.create({
+          dark: false,
+          color: "negative",
+          title: "Error",
+          message: error.response.data.message,
+          persistent: true,
+        });
+      });
+  }
+}
+watchEffect(() => companyData(currentMembership.value));
+
+function getCountriesData() {
   api
-    .get("/api/company/show/" + currentMembership.value.company_id, {
+    .get("api/country", {
       headers: {
         Authorization: "Bearer " + userToken.value,
       },
     })
     .then((response) => {
       if (response.status === 200) {
-        console.log("setting/show");
-
-        id.value = response.data.id;
-        currency_id.value = response.data.currency_id;
-        name.value = response.data.name;
-        type.value = response.data.type;
-        address.value = response.data.address;
-        city.value = response.data.city;
-        sector.value = response.data.sector;
-        country.value = response.data.country;
-        phone.value = response.data.phone;
-        email.value = response.data.email;
-        website.value = response.data.website;
-        info.value = response.data.info;
-        logo.value = response.data.logo;
-        currency_name.value = response.data.currency_name;
-        currency_symbol.value = response.data.currency_symbol;
-        currency_code.value = response.data.currency_code;
-        country_name.value = response.data.country_name;
+        countriesData.value = response.data;
+        countries.value = response.data;
       }
     })
     .catch((error) => {
-      console.log(error.response);
+      Dialog.create({
+        dark: false,
+        color: "negative",
+        title: "Error",
+        message: error.response.data.message,
+        persistent: true,
+      });
     });
+}
+getCountriesData();
+
+function filterCountry(val, update) {
+  if (val === "") {
+    update(() => {
+      countries.value = countriesData.value;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    const c = countriesData.value;
+    countries.value = c.filter(
+      (v) => v.name.toLowerCase().indexOf(needle) > -1
+    );
+  });
+}
+
+function getCurrenciesData() {
+  api
+    .get("api/currency", {
+      headers: {
+        Authorization: "Bearer " + userToken.value,
+      },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        currenciesData.value = response.data;
+        currencies.value = response.data;
+      }
+    })
+    .catch((error) => {
+      Dialog.create({
+        dark: false,
+        color: "negative",
+        title: "Error",
+        message: error.response.data.message,
+        persistent: true,
+      });
+    });
+}
+getCurrenciesData();
+
+function filterCurrency(val, update) {
+  if (val === "") {
+    update(() => {
+      currencies.value = currenciesData.value;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    const c = currenciesData.value;
+    currencies.value = c.filter(
+      (v) => v.name.toLowerCase().indexOf(needle) > -1
+    );
+  });
+}
+
+function updateCompany() {
+  const data = company.value;
+  api
+    .post("api/company/update/" + currentMembership.value.company_id, data, {
+      headers: {
+        Authorization: "Bearer " + userToken.value,
+      },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        companyData();
+        Dialog.create({
+          dark: false,
+          color: "positive",
+          title: "Success",
+          message: response.data.message,
+          persistent: true,
+        });
+      }
+    })
+    .catch((error) => {
+      Dialog.create({
+        dark: false,
+        color: "negative",
+        title: "Error",
+        message: error.response.data.message,
+        persistent: true,
+      });
+    });
+}
+
+// Validation Rules
+function formError() {
+  console.log("formError");
+}
+function formSuccess() {
+  console.log("formSuccess");
+}
+
+function required(val) {
+  if (val === null) {
+    return "You must make a selection!";
+  }
 }
 </script>

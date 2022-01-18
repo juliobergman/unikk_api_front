@@ -1,8 +1,9 @@
 import { Cookies } from "quasar";
 import { api } from "src/boot/axios";
 
-export function actionUser({ commit }) {
-  console.log("Actions SetUser");
+export function actionUser({ commit, rootMutations }, payload = null) {
+  // console.log("Actions SetUser");
+  // console.log(rootMutations);
   let token = Cookies.get("user_token");
   api
     .get("/api/user", {
@@ -12,6 +13,8 @@ export function actionUser({ commit }) {
     })
     .then((response) => {
       if (response.status === 200) {
+        // console.log(response.data);
+        commit("company/setCompany", response.data.company, { root: true });
         commit("setAuth", response.data.auth);
         commit("setToken", response.data.token);
         commit("setUser", response.data.user);

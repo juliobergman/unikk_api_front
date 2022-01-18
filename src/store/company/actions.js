@@ -1,10 +1,8 @@
 import { Cookies } from "quasar";
 import { api } from "src/boot/axios";
 
-export function actionCompany({ commit }) {
-  console.log("Actions SetCompany");
+export function actionCompany({ commit, state }, payload = "hola") {
   let token = Cookies.get("user_token");
-
   return;
 
   api

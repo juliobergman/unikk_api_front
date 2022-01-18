@@ -16,10 +16,16 @@ export function setCompany(state, company) {
   state.website = company.website;
   state.info = company.info;
   state.logo = company.logo;
+  state.shares = company.shares;
+  state.taxrate = company.taxrate;
   state.currency_name = company.currency_name;
   state.currency_symbol = company.currency_symbol;
   state.currency_code = company.currency_code;
   state.country_name = company.country_name;
+  state.country_region = company.country_region;
+  state.country_subregion = company.country_subregion;
+  state.country_latitude = company.country_latitude;
+  state.country_longitude = company.country_longitude;
 }
 export function setId(state, id) {
   state.id = id;
@@ -60,6 +66,12 @@ export function setInfo(state, info) {
 export function setLogo(state, logo) {
   state.logo = logo;
 }
+export function setShares(state, shares) {
+  state.shares = shares;
+}
+export function setTaxRate(state, taxrate) {
+  state.taxrate = taxrate;
+}
 export function setCurrencyName(state, currency_name) {
   state.currency_name = currency_name;
 }
@@ -71,4 +83,16 @@ export function setCurrencyCode(state, currency_code) {
 }
 export function setCountryName(state, country_name) {
   state.country_name = country_name;
+}
+export function setCountryRegion(state, country_region) {
+  state.country_region = country_region;
+}
+export function setCountrySubregion(state, country_subregion) {
+  state.country_subregion = country_subregion;
+}
+export function setCountryLatitude(state, country_latitude) {
+  state.country_latitude = country_latitude;
+}
+export function setCountryLongitude(state, country_longitude) {
+  state.country_longitude = country_longitude;
 }
