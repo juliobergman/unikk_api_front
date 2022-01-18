@@ -1,6 +1,7 @@
 import { store } from "quasar/wrappers";
 import { createStore } from "vuex";
 
+import res from "./res";
 import app from "./app";
 import user from "./user";
 import company from "./company";
@@ -27,6 +28,7 @@ export default store(function (/* { ssrContext } */) {
     actions: {},
     getters: {},
     modules: {
+      res,
       app,
       user,
       company,

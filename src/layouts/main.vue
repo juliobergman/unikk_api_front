@@ -32,6 +32,8 @@ import { ref } from "vue";
 import { useStore } from "vuex";
 
 const $store = useStore();
+$store.dispatch("res/actionCountries");
+$store.dispatch("res/actionCurrencies");
 
 if (!$store.state.user.authorized) {
   $store.dispatch("user/actionUser");
