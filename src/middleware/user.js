@@ -12,9 +12,10 @@ export async function auth({ next, store }) {
     })
     .catch((error) => {
       Dialog.create({
-        dark: true,
-        title: "Alert",
-        message: "Some message",
+        color: "warning",
+        dark: false,
+        title: "Session Timeout",
+        message: "You have been logged out because your session has expired",
         persistent: true,
       });
 

@@ -2,8 +2,6 @@ import { Cookies } from "quasar";
 import { api } from "src/boot/axios";
 
 export function actionUser({ commit, rootMutations }, payload = null) {
-  // console.log("Actions SetUser");
-  // console.log(rootMutations);
   let token = Cookies.get("user_token");
   api
     .get("/api/user", {

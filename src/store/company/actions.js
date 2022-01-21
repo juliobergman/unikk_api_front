@@ -1,23 +1,18 @@
 import { Cookies } from "quasar";
 import { api } from "src/boot/axios";
 
-export function actionCompany({ commit, state }, payload = "hola") {
+export async function actionCompany({ commit, state }, payload = "hola") {
   let token = Cookies.get("user_token");
-  return;
-
-  api
-    .get("/api/user", {
+  console.log("actionCompany");
+  return await api
+    .get("/api/company/show/" + state.id, {
       headers: {
         Authorization: "Bearer " + token,
       },
     })
     .then((response) => {
       if (response.status === 200) {
-        commit("setAuth", response.data.auth);
-        commit("setToken", response.data.token);
-        commit("setUser", response.data.user);
-        commit("setCurrentMembership", response.data.currentMembership);
-        commit("setUserMemberships", response.data.userMemberships);
+        commit("setCompany", response.data);
       }
     })
     .catch((error) => {

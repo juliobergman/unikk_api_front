@@ -2,13 +2,14 @@
   <q-page class="q-pa-xl">
     <div class="row">
       <div class="col-12 col-sm-4">
-        <q-img
-          width="100%"
-          :ratio="1"
-          :src="$store.state.app.baseurl + company.logo"
-          spinner-color="white"
-        >
-        </q-img>
+        <!-- Company Profile Image -->
+        <profile-image
+          :edit="edit"
+          :url="'/api/upload/avatar/company/' + company.id"
+          :src="company.logo"
+          @uploaded="fileUploaded"
+        />
+        <!--  -->
       </div>
       <div
         :class="$mobile ? 'col-12 col-sm-8 q-pt-xl' : 'col-12 col-sm-8 q-pl-xl'"
@@ -27,7 +28,7 @@
                   :src="
                     $store.state.app.baseurl +
                     '/storage/factory/flags/4x3/' +
-                    computedCompany.country +
+                    company.country +
                     '.svg'
                   "
                 />
@@ -66,10 +67,12 @@
               label="Email"
               :readonly="!edit"
             />
+
             <q-input
               borderless
               v-show="!edit"
               v-model="company.currency_name"
+              :prefix="company.currency_symbol"
               label="Currency"
               readonly
             />
@@ -86,23 +89,6 @@
               :options="$store.state.res.currencies"
               :rules="[required]"
             >
-              <!-- @filter="filterCurrency" -->
-              <template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps">
-                  <q-item-section class="text-grey">
-                    {{
-                      "(" +
-                      scope.opt.code +
-                      ") " +
-                      scope.opt.name +
-                      " (" +
-                      scope.opt.symbol +
-                      ")"
-                    }}
-                  </q-item-section>
-                </q-item>
-              </template>
-
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -121,7 +107,7 @@
             />
             <q-input
               :label-color="edit ? 'accent' : ''"
-              :borderless="!edit"
+              borderless
               v-model="company.taxrate"
               label="Effective Tax Rate"
               :readonly="!edit"
@@ -177,7 +163,7 @@
             />
             <q-input
               :label-color="edit ? 'accent' : ''"
-              :borderless="!edit"
+              borderless
               autogrow
               v-model="company.address"
               label="Address"
@@ -199,6 +185,7 @@
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab
+        persistent
         color="primary"
         icon="keyboard_arrow_left"
         direction="left"
@@ -206,9 +193,10 @@
         @update:model-value="toggleEdit"
       >
         <q-fab-action
+          flat
           color="primary"
-          @click="updateCompany"
           icon="save"
+          @click="updateCompany"
           :disable="formValid"
         />
       </q-fab>
@@ -232,7 +220,6 @@ let $mobile = computed({
 const $q = useQuasar();
 const $store = useStore();
 const $router = useRouter();
-
 let loading = computed({
   get: () => $store.state.loading,
   set: (val) => {
@@ -264,12 +251,8 @@ let company = ref({});
 let edit = ref(false);
 let formValid = ref(false);
 
-function toggleEdit(payload) {
-  if (!payload) companyData();
-  edit.value = payload;
-}
-function save() {
-  console.log(company.value);
+function fileUploaded(payload) {
+  companyData();
 }
 
 function companyData() {
@@ -304,40 +287,6 @@ function companyData() {
 }
 watchEffect(() => companyData(currentMembership.value));
 
-// function filterCountry(val, update) {
-//   if (val === "") {
-//     update(() => {
-//       countries.value = countriesData.value;
-//     });
-//     return;
-//   }
-
-//   update(() => {
-//     const needle = val.toLowerCase();
-//     const c = countriesData.value;
-//     countries.value = c.filter(
-//       (v) => v.name.toLowerCase().indexOf(needle) > -1
-//     );
-//   });
-// }
-
-// function filterCurrency(val, update) {
-//   if (val === "") {
-//     update(() => {
-//       currencies.value = currenciesData.value;
-//     });
-//     return;
-//   }
-
-//   update(() => {
-//     const needle = val.toLowerCase();
-//     const c = currenciesData.value;
-//     currencies.value = c.filter(
-//       (v) => v.name.toLowerCase().indexOf(needle) > -1
-//     );
-//   });
-// }
-
 function updateCompany() {
   $q.loading.show();
   const data = company.value;
@@ -349,7 +298,6 @@ function updateCompany() {
     })
     .then((response) => {
       if (response.status === 200) {
-        companyData();
         Dialog.create({
           dark: false,
           color: "positive",
@@ -357,6 +305,8 @@ function updateCompany() {
           message: response.data.message,
           persistent: true,
         });
+        company.value = response.data.company;
+        $store.commit("company/setCompany", response.data.company);
       }
     })
     .then(() => {
@@ -374,6 +324,12 @@ function updateCompany() {
     });
 }
 
+function toggleEdit(payload) {
+  if (!payload) {
+    companyData();
+  }
+  edit.value = payload;
+}
 // Validation Rules
 function formError() {
   console.log("formError");
@@ -381,7 +337,6 @@ function formError() {
 function formSuccess() {
   console.log("formSuccess");
 }
-
 function required(val) {
   if (val === null) {
     return "You must make a selection!";
