@@ -7,7 +7,7 @@
         border-right: 1px solid #ddd;
       "
     >
-      <q-list bordered class="rounded-borders">
+      <q-list>
         <q-item tag="label" v-ripple>
           <q-item-section avatar>
             <q-icon name="dark_mode" />
@@ -16,11 +16,24 @@
             <q-item-label>Dark Mode</q-item-label>
           </q-item-section>
           <q-item-section avatar>
-            <q-toggle color="orange" v-model="darkMode" val="battery" />
+            <q-toggle
+              indeterminate-value="'auto'"
+              color="secondary"
+              v-model="darkMode"
+            />
           </q-item-section>
         </q-item>
 
+        <q-item to="" clickable v-ripple active-class="text-secondary">
+          <q-item-section avatar>
+            <q-icon name="perm_identity" />
+          </q-item-section>
+
+          <q-item-section> My Account </q-item-section>
+        </q-item>
+
         <q-expansion-item
+          v-if="false"
           expand-separator
           icon="perm_identity"
           label="Account Settings"
@@ -35,14 +48,17 @@
             </q-card-section>
           </q-card>
         </q-expansion-item>
+        <q-item clickable v-ripple @click="logout">
+          <q-item-section avatar>
+            <q-icon name="logout" />
+          </q-item-section>
+
+          <q-item-section> Logout </q-item-section>
+        </q-item>
       </q-list>
     </q-scroll-area>
 
-    <q-img
-      class="absolute-top"
-      src="http://apiunikk:8080/storage/ui/abstract-001.png"
-      style="height: 51px"
-    >
+    <div class="absolute-top bg-primary" style="height: 51px">
       <div class="full-width full-height flex flex-center no-padding">
         <div class="col text-left q-px-xs">
           <q-btn
@@ -56,23 +72,49 @@
           />
         </div>
       </div>
-    </q-img>
+    </div>
   </q-drawer>
 </template>
 
 <script setup>
-import { ref } from "vue";
-
-import { computed } from "vue";
+import { ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { Cookies, useQuasar } from "quasar";
 
-import { Cookies } from "quasar";
-
+const $q = useQuasar();
 const $store = useStore();
 const $router = useRouter();
 
-let darkMode = ref(false);
+const avatar = $store.state.user.user.profile_pic;
+const userName = $store.state.user.user.name;
+const userSubtitle = $store.state.user.currentMembership.job_title;
+
+let darkMode = computed({
+  get: () => $q.dark.mode,
+  set: (val) => $store.commit("app/setDarkMode", val),
+});
+
+let drawer = computed({
+  get: () => $store.state.app.rightDrawer,
+  set: (val) => {
+    $store.commit("app/toggleRightDrawer", val);
+  },
+});
+
+function closeDrawer() {
+  drawer.value = false;
+}
+
+function logout() {
+  $q.loading.show();
+  Cookies.remove("user_authorization");
+  Cookies.remove("user_token");
+  setTimeout(() => {
+    $q.loading.hide();
+    $router.push({ name: "login" });
+  }, 200);
+}
 
 const items = [
   {
@@ -122,19 +164,4 @@ const items = [
   //   to: "financialStatement",
   // },
 ];
-
-let drawer = computed({
-  get: () => $store.state.app.rightDrawer,
-  set: (val) => {
-    $store.commit("app/toggleRightDrawer", val);
-  },
-});
-
-function closeDrawer() {
-  drawer.value = false;
-}
-
-const avatar = $store.state.user.user.profile_pic;
-const userName = $store.state.user.user.name;
-const userSubtitle = $store.state.user.currentMembership.job_title;
 </script>

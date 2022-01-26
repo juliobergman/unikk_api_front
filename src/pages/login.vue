@@ -71,16 +71,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { api } from "boot/axios";
-import { Platform } from "quasar";
-
-import { computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { Platform, Cookies, useQuasar } from "quasar";
 
-import { Cookies } from "quasar";
-
+const $q = useQuasar();
 const AjaxBar = ref(null);
 const $store = useStore();
 const $router = useRouter();
@@ -168,8 +165,10 @@ function login() {
         company.value = response.data.company;
         currentMembership.value = response.data.currentMembership;
         userMemberships.value = response.data.userMemberships;
-        Cookies.set("user_authorization", response.data.auth);
-        Cookies.set("user_token", response.data.token);
+        Cookies.set("user_authorization", response.data.auth, {
+          expires: "1h",
+        });
+        Cookies.set("user_token", response.data.token, { expires: "1h" });
         $router.push({ name: "dashboard" });
       }
     })
@@ -189,6 +188,7 @@ function login() {
 .logincard {
   width: 100%;
   max-width: 375px;
+  background: transparent;
 }
 .logo {
   max-width: 175px;

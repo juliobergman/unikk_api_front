@@ -186,7 +186,6 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab
         persistent
-        color="primary"
         icon="keyboard_arrow_left"
         direction="left"
         flat
@@ -194,7 +193,6 @@
       >
         <q-fab-action
           flat
-          color="primary"
           icon="save"
           @click="updateCompany"
           :disable="formValid"

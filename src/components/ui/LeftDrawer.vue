@@ -1,12 +1,6 @@
 <template>
   <q-drawer show-if-above v-model="drawer" side="left">
-    <q-scroll-area
-      style="
-        height: calc(100% - 195px);
-        margin-top: 195px;
-        border-right: 1px solid #ddd;
-      "
-    >
+    <q-scroll-area style="height: calc(100% - 195px); margin-top: 195px">
       <q-list padding>
         <!-- :active="item.active" -->
         <q-item
