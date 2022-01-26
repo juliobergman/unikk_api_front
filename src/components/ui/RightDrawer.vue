@@ -24,7 +24,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="" clickable v-ripple active-class="text-secondary">
+        <q-item to="account" clickable v-ripple active-class="text-secondary">
           <q-item-section avatar>
             <q-icon name="perm_identity" />
           </q-item-section>

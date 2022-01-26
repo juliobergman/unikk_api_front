@@ -14,6 +14,14 @@ const routes = [
     component: () => import("layouts/main.vue"),
     children: [
       {
+        path: "/account",
+        name: "account",
+        component: () => import("pages/account.vue"),
+        meta: {
+          middlewares: [auth],
+        },
+      },
+      {
         path: "/dashboard",
         name: "dashboard",
         component: () => import("pages/Index.vue"),
@@ -21,12 +29,6 @@ const routes = [
           middlewares: [auth],
         },
       },
-    ],
-  },
-  {
-    path: "/",
-    component: () => import("layouts/main.vue"),
-    children: [
       {
         path: "/company",
         name: "company",
@@ -35,12 +37,6 @@ const routes = [
           middlewares: [auth],
         },
       },
-    ],
-  },
-  {
-    path: "/",
-    component: () => import("layouts/main.vue"),
-    children: [
       {
         path: "/workgroup",
         name: "workgroup",
@@ -49,12 +45,6 @@ const routes = [
           middlewares: [auth],
         },
       },
-    ],
-  },
-  {
-    path: "/",
-    component: () => import("layouts/main.vue"),
-    children: [
       {
         path: "/pecc",
         name: "pecc",
@@ -63,12 +53,6 @@ const routes = [
           middlewares: [auth],
         },
       },
-    ],
-  },
-  {
-    path: "/",
-    component: () => import("layouts/main.vue"),
-    children: [
       {
         path: "/target",
         name: "target",
@@ -77,12 +61,6 @@ const routes = [
           middlewares: [auth],
         },
       },
-    ],
-  },
-  {
-    path: "/",
-    component: () => import("layouts/main.vue"),
-    children: [
       {
         path: "/contact",
         name: "contact",

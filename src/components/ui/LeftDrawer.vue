@@ -95,6 +95,12 @@ const items = [
     to: "contact",
     active: false,
   },
+  {
+    title: "Account",
+    icon: "person",
+    to: "account",
+    active: false,
+  },
   // {
   //   title: "Charts",
   //   icon: "analytics",
