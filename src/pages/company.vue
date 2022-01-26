@@ -274,7 +274,7 @@ function companyData() {
       .catch((error) => {
         $q.loading.hide();
         Dialog.create({
-          dark: false,
+          dark: $q.dark.isActive,
           color: "negative",
           title: "Error",
           message: error.response.data.message,
@@ -297,7 +297,7 @@ function updateCompany() {
     .then((response) => {
       if (response.status === 200) {
         Dialog.create({
-          dark: false,
+          dark: $q.dark.isActive,
           color: "positive",
           title: "Success",
           message: response.data.message,
@@ -313,7 +313,7 @@ function updateCompany() {
     .catch((error) => {
       $q.loading.hide();
       Dialog.create({
-        dark: false,
+        dark: $q.dark.isActive,
         color: "negative",
         title: "Error",
         message: error.response.data.message,

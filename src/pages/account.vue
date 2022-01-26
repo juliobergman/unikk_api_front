@@ -6,7 +6,7 @@
         <profile-image
           :edit="edit"
           url="/api/upload/avatar/user"
-          :src="user.profile_pic"
+          :src="userProfile.profile_pic"
           @uploaded="fileUploaded"
         />
         <!--  -->
@@ -18,16 +18,16 @@
           <div class="col-12">
             <div class="row justify-between" v-show="!edit">
               <div class="col-auto">
-                <div class="text-h5">{{ user.name }}</div>
+                <div class="text-h5">{{ userProfile.name }}</div>
               </div>
-              <q-avatar size="34px" square v-if="user.country">
+              <q-avatar size="34px" square v-if="userProfile.country">
                 <q-img
                   class="rounded-borders"
                   :ratio="4 / 3"
                   :src="
                     $store.state.app.baseurl +
                     '/storage/factory/flags/4x3/' +
-                    user.country +
+                    userProfile.country +
                     '.svg'
                   "
                 />
@@ -37,7 +37,7 @@
               <div class="col-12">
                 <q-input
                   label-color="accent"
-                  v-model="user.name"
+                  v-model="userProfile.name"
                   label="Name"
                   class="text-h5"
                 />
@@ -50,21 +50,21 @@
             <q-input
               :label-color="edit ? 'accent' : ''"
               :borderless="!edit"
-              v-model="user.phone"
+              v-model="userProfile.phone"
               label="Phone"
               :readonly="!edit"
             />
             <q-input
               :label-color="edit ? 'accent' : ''"
               :borderless="!edit"
-              v-model="user.email"
+              v-model="userProfile.email"
               label="Email"
               :readonly="!edit"
             />
             <q-input
               :label-color="edit ? 'accent' : ''"
               :borderless="!edit"
-              v-model="user.site"
+              v-model="userProfile.site"
               label="Website"
               :readonly="!edit"
             />
@@ -72,19 +72,19 @@
           <div class="col-12 col-sm-6">
             <q-input
               :borderless="!edit"
-              v-model="user.country_region"
+              v-model="userProfile.country_region"
               label="Region"
               readonly
             />
             <q-input
               :borderless="!edit"
-              v-model="user.country_subregion"
+              v-model="userProfile.country_subregion"
               label="Subregion"
               readonly
             />
             <q-input
               borderless
-              v-model="user.country_name"
+              v-model="userProfile.country_name"
               label="Country"
               v-show="!edit"
               readonly
@@ -92,14 +92,13 @@
             <q-select
               label-color="accent"
               v-show="edit"
-              v-model="user.country"
+              v-model="userProfile.country"
               option-value="iso2"
               option-label="name"
               emit-value
               map-options
               label="Country"
               :options="countries"
-              :rules="[required]"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -112,7 +111,7 @@
             <q-input
               :label-color="edit ? 'accent' : ''"
               :borderless="!edit"
-              v-model="user.city"
+              v-model="userProfile.city"
               label="City"
               :readonly="!edit"
             />
@@ -120,7 +119,7 @@
               :label-color="edit ? 'accent' : ''"
               borderless
               autogrow
-              v-model="user.address"
+              v-model="userProfile.address"
               label="Address"
               :readonly="!edit"
             />
@@ -187,12 +186,9 @@ let currentMembership = computed({
   },
 });
 
-let countries = computed({
-  get: () => $store.state.res.countries,
-});
-
 // Edit
-let user = ref({});
+const countries = $store.state.res.countries;
+let userProfile = ref({});
 let edit = ref(false);
 let formValid = ref(false);
 
@@ -212,7 +208,7 @@ function userData() {
       })
       .then((response) => {
         if (response.status === 200) {
-          user.value = response.data;
+          userProfile.value = response.data;
         }
       })
       .then(() => {
@@ -221,7 +217,7 @@ function userData() {
       .catch((error) => {
         $q.loading.hide();
         Dialog.create({
-          dark: false,
+          dark: $q.dark.isActive,
           color: "negative",
           title: "Error",
           message: error.response.data.message,
@@ -234,8 +230,7 @@ watchEffect(() => userData(currentMembership.value));
 
 function updateUser() {
   $q.loading.show();
-  const data = user.value;
-
+  const data = userProfile.value;
   api
     .put("api/user/update/" + currentMembership.value.user_id, data, {
       headers: {
@@ -245,13 +240,13 @@ function updateUser() {
     .then((response) => {
       if (response.status === 200) {
         Dialog.create({
-          dark: false,
+          dark: $q.dark.isActive,
           color: "positive",
           title: "Success",
           message: response.data.message,
           persistent: true,
         });
-        user.value = response.data.user;
+        userProfile.value = response.data.user;
         $store.commit("user/setUser", response.data.user);
       }
     })
@@ -261,7 +256,7 @@ function updateUser() {
     .catch((error) => {
       $q.loading.hide();
       Dialog.create({
-        dark: false,
+        dark: $q.dark.isActive,
         color: "negative",
         title: "Error",
         message: error.response.data.message,
