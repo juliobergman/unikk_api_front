@@ -13,3 +13,6 @@ export function setCurrentMembership(state, currentMembership) {
 export function setUserMemberships(state, userMemberships) {
   state.userMemberships = userMemberships;
 }
+export function setUserName(state, payload) {
+  state.user.name = payload;
+}

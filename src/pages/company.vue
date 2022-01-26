@@ -303,8 +303,9 @@ function updateCompany() {
           message: response.data.message,
           persistent: true,
         });
-        company.value = response.data.company;
+        // company.value = response.data.company;
         $store.commit("company/setCompany", response.data.company);
+        companyData();
       }
     })
     .then(() => {

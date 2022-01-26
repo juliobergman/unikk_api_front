@@ -98,7 +98,7 @@
               emit-value
               map-options
               label="Country"
-              :options="countries"
+              :options="$store.state.res.countries"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -187,7 +187,6 @@ let currentMembership = computed({
 });
 
 // Edit
-const countries = $store.state.res.countries;
 let userProfile = ref({});
 let edit = ref(false);
 let formValid = ref(false);
@@ -246,8 +245,8 @@ function updateUser() {
           message: response.data.message,
           persistent: true,
         });
-        userProfile.value = response.data.user;
         $store.commit("user/setUser", response.data.user);
+        userData();
       }
     })
     .then(() => {
