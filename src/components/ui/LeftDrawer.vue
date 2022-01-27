@@ -55,6 +55,12 @@ import { useRouter } from "vue-router";
 
 import { Cookies } from "quasar";
 
+// Platform
+import { Platform } from "quasar";
+let $mobile = computed({
+  get: () => (Platform.is.mobile ? true : false),
+});
+
 const $store = useStore();
 const $router = useRouter();
 
@@ -119,6 +125,9 @@ let drawer = computed({
     $store.commit("app/toggleLeftDrawer", val);
   },
 });
+
+if ($mobile.value) drawer.value = false;
+
 let avatar = computed({
   get: () =>
     $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png",
@@ -138,10 +147,4 @@ let userSubtitle = computed({
     $store.commit("app/toggleLeftDrawer", val);
   },
 });
-
-// const avatar =
-//   $store.state.user.user.profile_pic || "/storage/ui/abstract-001.png";
-// const userName = $store.state.user.user.name || "User Name";
-// const userSubtitle =
-//   $store.state.user.currentMembership.job_title || "Job Title";
 </script>

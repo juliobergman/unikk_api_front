@@ -4,7 +4,6 @@
       <div class="col-12 col-sm-4">
         <!-- User Profile Image -->
         <profile-image
-          :edit="edit"
           url="/api/upload/avatar/user"
           :src="userProfile.profile_pic"
           @uploaded="fileUploaded"
@@ -129,18 +128,13 @@
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab
-        persistent
         icon="keyboard_arrow_left"
         direction="left"
         flat
+        v-model="edit"
         @update:model-value="toggleEdit"
       >
-        <q-fab-action
-          flat
-          icon="save"
-          @click="updateUser"
-          :disable="formValid"
-        />
+        <q-fab-action flat icon="save" @click.stop="updateUser" />
       </q-fab>
     </q-page-sticky>
   </q-page>
@@ -189,11 +183,12 @@ let currentMembership = computed({
 // Edit
 let userProfile = ref({});
 let edit = ref(false);
-let formValid = ref(false);
+let saveAvatar = ref(false);
 
 function fileUploaded(payload) {
+  saveAvatar.value = false;
   $store.dispatch("user/actionUser");
-  userData();
+  // userData();
 }
 
 function userData() {

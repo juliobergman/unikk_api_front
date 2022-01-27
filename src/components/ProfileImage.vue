@@ -5,9 +5,11 @@
     :ratio="1"
     :src="image"
     spinner-color="white"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
   >
     <fade-bottom-transition>
-      <div v-show="edit" class="absolute-bottom">
+      <div v-show="hover || filePicked || $mobile" class="absolute-bottom">
         <div v-if="!filePicked">
           <q-btn
             outline
@@ -40,7 +42,7 @@
     </fade-bottom-transition>
   </q-img>
 
-  <div v-show="false" class="q-mt-xl">
+  <div v-show="false">
     <q-uploader
       ref="uploader"
       dark
@@ -56,7 +58,6 @@
       @uploading="$q.loading.show()"
       @uploaded="fileUploaded"
       @failed="failedUpload"
-      v-show="true"
     />
     <!-- @added="fileAdded" -->
     <!-- @rejected="onRejected" -->
@@ -73,19 +74,15 @@ import {
   defineEmits,
 } from "vue";
 import { api } from "boot/axios";
-import { useQuasar, Dialog } from "quasar";
+import { useQuasar, Dialog, Platform } from "quasar";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-
 const $q = useQuasar();
 const $store = useStore();
 const $router = useRouter();
+let hover = ref(false);
 
 const props = defineProps({
-  edit: {
-    type: Boolean,
-    default: false,
-  },
   src: {
     type: String,
     default: "/storage/factory/avatar/misc/avatar-company.jpg",
@@ -99,6 +96,10 @@ const props = defineProps({
 const emit = defineEmits(["uploaded"]);
 
 // Computed
+let $mobile = computed({
+  get: () => (Platform.is.mobile ? true : false),
+});
+
 let userToken = computed({
   get: () => $store.state.user.token,
   set: (val) => {
@@ -107,16 +108,9 @@ let userToken = computed({
 });
 const image = computed({
   get: () =>
-    filePicked.value && props.edit
+    filePicked.value
       ? filePickedData.value
       : $store.state.app.baseurl + props.src,
-});
-const editStatus = computed({
-  get: () => props.edit,
-});
-
-watch(editStatus, (to) => {
-  if (!to) clearFile();
 });
 
 // Data

@@ -4,7 +4,6 @@
       <div class="col-12 col-sm-4">
         <!-- Company Profile Image -->
         <profile-image
-          :edit="edit"
           :url="'/api/upload/avatar/company/' + company.id"
           :src="company.logo"
           @uploaded="fileUploaded"
@@ -172,7 +171,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 q-py-xl">
+      <div :class="$mobile ? 'col-12' : 'col-12 q-mt-xl'">
         <q-input
           :label-color="edit ? 'accent' : ''"
           :borderless="!edit"
