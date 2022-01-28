@@ -22,14 +22,14 @@
 
     <q-img
       class="absolute-top"
-      src="http://apiunikk:8080/storage/ui/abstract-001.png"
+      :src="$store.state.app.baseurl + '/storage/ui/abstract-001.png'"
       style="height: 195px"
     >
       <div class="full-width full-height flex flex-center no-margin no-padding">
         <div class="row full-height">
           <div class="text-center self-start q-mb-sm q-mt-md col-12">
             <q-avatar size="75px">
-              <img :src="'http://apiunikk:8080/' + avatar" />
+              <img :src="$store.state.app.baseurl + avatar" />
             </q-avatar>
           </div>
           <div class="col-12 text-center">
@@ -53,10 +53,9 @@ import { computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-import { Cookies } from "quasar";
+import { Cookies, Platform } from "quasar";
 
 // Platform
-import { Platform } from "quasar";
 let $mobile = computed({
   get: () => (Platform.is.mobile ? true : false),
 });

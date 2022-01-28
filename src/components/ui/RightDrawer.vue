@@ -32,22 +32,8 @@
           <q-item-section> My Account </q-item-section>
         </q-item>
 
-        <q-expansion-item
-          v-if="false"
-          expand-separator
-          icon="perm_identity"
-          label="Account Settings"
-          :caption="userName"
-        >
-          <q-card>
-            <q-card-section>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem,
-              eius reprehenderit eos corrupti commodi magni quaerat ex numquam,
-              dolorum officiis modi facere maiores architecto suscipit iste
-              eveniet doloribus ullam aliquid.
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
+        <expansion-item-company @updated="closeDrawer" />
+
         <q-item clickable v-ripple @click="logout">
           <q-item-section avatar>
             <q-icon name="logout" />
@@ -81,14 +67,11 @@ import { ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Cookies, useQuasar } from "quasar";
+import ExpansionItemCompany from "../ExpansionItemCompany.vue";
 
 const $q = useQuasar();
 const $store = useStore();
 const $router = useRouter();
-
-const avatar = $store.state.user.user.profile_pic;
-const userName = $store.state.user.user.name;
-const userSubtitle = $store.state.user.currentMembership.job_title;
 
 let darkMode = computed({
   get: () => $q.dark.mode,

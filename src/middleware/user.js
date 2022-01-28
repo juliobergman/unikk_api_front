@@ -1,4 +1,4 @@
-import { Cookies } from "quasar";
+import { Cookies, Platform } from "quasar";
 import { api } from "src/boot/axios";
 import { Dialog } from "quasar";
 
@@ -13,7 +13,7 @@ export async function auth({ next, store }) {
     .catch((error) => {
       Dialog.create({
         color: "warning",
-        dark: false,
+        dark: Platform.is.mobile ? true : false,
         title: "Session Timeout",
         message: "You have been logged out because your session has expired",
         persistent: true,
