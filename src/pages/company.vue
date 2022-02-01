@@ -5,7 +5,7 @@
         <!-- Company Profile Image -->
         <profile-image
           :url="'/api/upload/avatar/company/' + company.id"
-          :src="company.logo"
+          :src="avatar"
           @uploaded="fileUploaded"
         />
         <!--  -->
@@ -185,7 +185,7 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab
         persistent
-        icon="keyboard_arrow_left"
+        icon="edit"
         direction="left"
         flat
         @update:model-value="toggleEdit"
@@ -239,14 +239,14 @@ let currentMembership = computed({
   },
 });
 
-// Company Data
-let computedCompany = computed({
-  get: () => $store.state.company,
-});
 // Edit
 let company = ref({});
 let edit = ref(false);
 let formValid = ref(false);
+
+let avatar = computed({
+  get: () => (company.value.logo ? company.value.logo : false),
+});
 
 function fileUploaded(payload) {
   companyData();

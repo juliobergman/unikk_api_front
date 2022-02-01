@@ -5,7 +5,7 @@
         <!-- User Profile Image -->
         <profile-image
           url="/api/upload/avatar/user"
-          :src="userProfile.profile_pic"
+          :src="avatar"
           @uploaded="fileUploaded"
         />
         <!--  -->
@@ -184,6 +184,11 @@ let currentMembership = computed({
 let userProfile = ref({});
 let edit = ref(false);
 let saveAvatar = ref(false);
+
+let avatar = computed({
+  get: () =>
+    userProfile.value.profile_pic ? userProfile.value.profile_pic : false,
+});
 
 function fileUploaded(payload) {
   saveAvatar.value = false;

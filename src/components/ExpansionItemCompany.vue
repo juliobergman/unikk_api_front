@@ -19,7 +19,12 @@
         <q-item-section> {{ membership.company_name }} </q-item-section>
       </q-item>
 
-      <q-item clickable v-ripple active-class="text-secondary">
+      <q-item
+        clickable
+        v-ripple
+        active-class="text-secondary"
+        @click="NewCompanyDialog = true"
+      >
         <q-item-section avatar>
           <q-icon name="domain_add" />
         </q-item-section>
@@ -27,6 +32,11 @@
         <q-item-section> Create Company </q-item-section>
       </q-item>
     </q-list>
+    <dialog-new-company
+      v-model="NewCompanyDialog"
+      @update:model-value="NewCompanyDialog = $event"
+      @membership:stored="switchCompany"
+    />
   </q-expansion-item>
 </template>
 
@@ -44,6 +54,7 @@ const $store = useStore();
 const $router = useRouter();
 
 let open = ref(false);
+let NewCompanyDialog = ref(false);
 
 let userToken = computed({
   get: () => $store.state.user.token,
