@@ -187,7 +187,7 @@ let saveAvatar = ref(false);
 
 let avatar = computed({
   get: () =>
-    userProfile.value.profile_pic ? userProfile.value.profile_pic : false,
+    userProfile.value.profile_pic ? userProfile.value.profile_pic : "",
 });
 
 function fileUploaded(payload) {

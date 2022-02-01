@@ -245,7 +245,7 @@ let edit = ref(false);
 let formValid = ref(false);
 
 let avatar = computed({
-  get: () => (company.value.logo ? company.value.logo : false),
+  get: () => (company.value.logo ? company.value.logo : ""),
 });
 
 function fileUploaded(payload) {
