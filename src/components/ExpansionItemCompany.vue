@@ -35,7 +35,7 @@
     <dialog-new-company
       v-model="NewCompanyDialog"
       @update:model-value="NewCompanyDialog = $event"
-      @membership:stored="switchCompany"
+      @company:stored="switchCompany"
     />
   </q-expansion-item>
 </template>
@@ -71,7 +71,14 @@ const userMemberships = computed({
   get: () => $store.state.user.userMemberships,
 });
 
-function switchCompany(id) {
+function switchCompany(data) {
+  open.value = false;
+  if (data.company.type == "active") {
+    switchMembership(data.membership.id);
+  }
+}
+
+function switchMembership(id) {
   $q.loading.show();
   api
     .put(
@@ -93,7 +100,6 @@ function switchCompany(id) {
     })
     .then(() => {
       emit("updated");
-      open.value = false;
       $router.push({ name: "company" });
     })
     .catch((error) => {

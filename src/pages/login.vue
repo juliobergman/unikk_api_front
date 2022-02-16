@@ -77,6 +77,9 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Platform, Cookies, useQuasar } from "quasar";
 
+if (Cookies.has("user_token")) Cookies.remove("user_token");
+if (Cookies.has("user_authorization")) Cookies.remove("user_authorization");
+
 const $q = useQuasar();
 const AjaxBar = ref(null);
 const $store = useStore();
@@ -165,10 +168,8 @@ function login() {
         company.value = response.data.company;
         currentMembership.value = response.data.currentMembership;
         userMemberships.value = response.data.userMemberships;
-        Cookies.set("user_authorization", response.data.auth, {
-          expires: "1h",
-        });
-        Cookies.set("user_token", response.data.token, { expires: "1h" });
+        Cookies.set("user_token", response.data.token);
+        Cookies.set("user_authorization", response.data.auth);
         $router.push({ name: "dashboard" });
       }
     })
@@ -176,7 +177,9 @@ function login() {
       bar.stop();
       loading.value = false;
       userAuth.value = false;
-      Cookies.remove("user_authorization");
+      if (Cookies.has("user_token")) Cookies.remove("user_token");
+      if (Cookies.has("user_authorization"))
+        Cookies.remove("user_authorization");
       if (error.response.status === 419) {
         errorMessage.value = "Login Failed, Access Denied";
       }

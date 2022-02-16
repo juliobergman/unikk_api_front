@@ -49,12 +49,11 @@ let pagesNumber = computed(() =>
 let showPagination = computed(() => (pagesNumber.value > 1 ? true : false));
 
 function fetchTargets() {
-  // api/company/1/target
   let companyId = currentMembership.value.company_id;
   if (companyId) {
     $q.loading.show();
     api
-      .get("api/company/" + companyId + "/target", {
+      .get("api/company/" + companyId + "/type/target", {
         headers: {
           Authorization: "Bearer " + userToken.value,
         },

@@ -11,3 +11,10 @@ export function setDarkMode(state, payload) {
   Dark.set(payload);
   state.darkmode = payload;
 }
+export function resetState(state) {
+  state.baseurl = process.env.API_BASE_URL;
+  state.loading = false;
+  state.leftDrawer = true;
+  state.rightDrawer = false;
+  state.darkmode = "auto";
+}

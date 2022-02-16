@@ -1,3 +1,6 @@
+import defaultState from "./state";
+console.log(defaultState);
+
 export function setAuth(state, auth) {
   state.authorized = auth;
 }
@@ -15,4 +18,11 @@ export function setUserMemberships(state, userMemberships) {
 }
 export function setUserName(state, payload) {
   state.user.name = payload;
+}
+export function resetState(state) {
+  state.authorized = false;
+  state.token = false;
+  state.user = {};
+  state.currentMembership = {};
+  state.userMemberships = {};
 }

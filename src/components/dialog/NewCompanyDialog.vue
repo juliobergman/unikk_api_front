@@ -138,14 +138,19 @@ function addNewCompany() {
       .then((response) => {
         console.log(response.data);
         if (response.status === 200) {
-          emit("company:stored", response.data.company.id);
-          emit("membership:stored", response.data.membership.id);
+          emit("company:stored", {
+            company: response.data.company,
+            membership: response.data.membership,
+          });
+
           Dialog.create({
             dark: $q.dark.isActive,
             color: "positive",
             title: "Success",
             message: response.data.message,
             persistent: false,
+          }).onDismiss(() => {
+            value.value = false;
           });
         }
       })

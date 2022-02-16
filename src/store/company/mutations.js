@@ -96,3 +96,29 @@ export function setCountryLatitude(state, country_latitude) {
 export function setCountryLongitude(state, country_longitude) {
   state.country_longitude = country_longitude;
 }
+
+export function resetState(state) {
+  state.id = "";
+  state.currency_id = "";
+  state.name = "";
+  state.type = "";
+  state.address = "";
+  state.city = "";
+  state.sector = "";
+  state.country = "";
+  state.phone = "";
+  state.email = "";
+  state.website = "";
+  state.info = "";
+  state.logo = "";
+  state.shares = "";
+  state.taxrate = "";
+  state.currency_name = "";
+  state.currency_symbol = "";
+  state.currency_code = "";
+  state.country_name = "";
+  state.country_region = "";
+  state.country_subregion = "";
+  state.country_latitude = "";
+  state.country_longitude = "";
+}

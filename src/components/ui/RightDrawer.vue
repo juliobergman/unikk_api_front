@@ -93,6 +93,10 @@ function logout() {
   $q.loading.show();
   Cookies.remove("user_authorization");
   Cookies.remove("user_token");
+  $store.commit("app/resetState");
+  $store.commit("company/resetState");
+  $store.commit("res/resetState");
+  $store.commit("user/resetState");
   setTimeout(() => {
     $q.loading.hide();
     $router.push({ name: "login" });
