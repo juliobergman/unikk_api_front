@@ -6,6 +6,21 @@
       </q-card-section>
 
       <q-card-section>
+        <!-- Type -->
+        <q-separator />
+        <q-btn-toggle
+          flat
+          spread
+          toggle-color="secondary"
+          ref="typeRef"
+          v-model="company.type"
+          :options="[
+            { label: 'Active', value: 'active' },
+            { label: 'Target', value: 'target' },
+          ]"
+        />
+        <q-separator class="q-mb-md" />
+        <!-- Name -->
         <q-input
           label="Company Name"
           v-model="company.name"
@@ -79,11 +94,13 @@ let company = ref({
   name: "",
   country: "CH",
   currency_id: 2,
+  type: "active",
 });
 
 const nameRef = ref(null);
 const countryRef = ref(null);
 const currencyRef = ref(null);
+const typeRef = ref(null);
 
 // Computed
 let value = computed({
@@ -109,9 +126,9 @@ function addNewCompany() {
     $q.loading.show();
     const data = {
       company_id: $store.state.company.id,
-      type: "active",
       ...company.value,
     };
+
     api
       .post("api/company/store", data, {
         headers: {

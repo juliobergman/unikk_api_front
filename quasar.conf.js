@@ -43,7 +43,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
-
+      env: require("dotenv").config().parsed,
       // transpile: false,
       // publicPath: '/',
 
@@ -75,7 +75,7 @@ module.exports = configure(function (ctx) {
       server: {
         type: "http",
       },
-      port: 8080,
+      port: 2424,
       open: true, // opens browser window automatically
       proxy: {
         // proxy all requests starting with /sanctum to jsonplaceholder

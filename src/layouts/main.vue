@@ -38,8 +38,7 @@ $store.dispatch("res/actionCurrencies");
 if (!$store.state.user.authorized) {
   $store.dispatch("user/actionUser");
 }
-
-if (Cookies.get("dark")) {
+if (Cookies.has("dark")) {
   $store.commit("app/setDarkMode", Cookies.get("dark"));
 }
 
