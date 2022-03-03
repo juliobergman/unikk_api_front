@@ -181,6 +181,65 @@
           :readonly="!edit"
         />
       </div>
+      <div class="col-12" v-if="showTargetData">
+        <q-separator class="q-my-md" />
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.target_company_ov"
+          label="Company Overview"
+          :readonly="!edit"
+        />
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.target_financial_ov"
+          label="Financial Ov"
+          :readonly="!edit"
+        />
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.target_milestones"
+          label="Milestones"
+          :readonly="!edit"
+        />
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.target_competitors"
+          label="Competitors"
+          :readonly="!edit"
+        />
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.target_goals"
+          label="Goals"
+          :readonly="!edit"
+        />
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.target_channels"
+          label="Channels"
+          :readonly="!edit"
+        />
+        <q-input
+          :label-color="edit ? 'accent' : ''"
+          :borderless="!edit"
+          autogrow
+          v-model="company.target_challenges"
+          label="Challenges"
+          :readonly="!edit"
+        />
+      </div>
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab
@@ -206,7 +265,7 @@ import { ref, computed, watchEffect } from "vue";
 import { api } from "boot/axios";
 import { useQuasar, Dialog } from "quasar";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 // Platform
 import { Platform } from "quasar";
@@ -217,6 +276,7 @@ let $mobile = computed({
 const $q = useQuasar();
 const $store = useStore();
 const $router = useRouter();
+const $route = useRoute();
 let loading = computed({
   get: () => $store.state.loading,
   set: (val) => {
@@ -239,10 +299,15 @@ let currentMembership = computed({
   },
 });
 
+let showTargetData = computed(() =>
+  $route.params.type === "target" ? true : false
+);
+
 // Edit
 let company = ref({});
 let edit = ref(false);
 let formValid = ref(false);
+let fetchId = ref(null);
 
 let avatar = computed({
   get: () => (company.value.logo ? company.value.logo : ""),
@@ -253,10 +318,22 @@ function fileUploaded(payload) {
 }
 
 function companyData() {
-  if (currentMembership.value.company_id) {
+  if (currentMembership.value.company_id && !$route.params.id) {
+    fetchId.value = currentMembership.value.company_id;
+  }
+  if (currentMembership.value.company_id && $route.params.id) {
+    fetchId.value = $route.params.id;
+  }
+
+  if (fetchId.value) {
+    let uri = "api/company/show/" + fetchId.value;
+    if ($route.params.type === "target") {
+      console.log("Target Data");
+      uri += "/target";
+    }
     $q.loading.show();
     api
-      .get("api/company/show/" + currentMembership.value.company_id, {
+      .get(uri, {
         headers: {
           Authorization: "Bearer " + userToken.value,
         },
@@ -264,7 +341,9 @@ function companyData() {
       .then((response) => {
         if (response.status === 200) {
           company.value = response.data;
-          $store.commit("company/setCompany", response.data);
+          if (response.data.type === "active") {
+            $store.commit("company/setCompany", response.data);
+          }
         }
       })
       .then(() => {
@@ -287,39 +366,43 @@ watchEffect(() => companyData(currentMembership.value));
 function updateCompany() {
   $q.loading.show();
   const data = company.value;
-  api
-    .post("api/company/update/" + currentMembership.value.company_id, data, {
-      headers: {
-        Authorization: "Bearer " + userToken.value,
-      },
-    })
-    .then((response) => {
-      if (response.status === 200) {
+  if (fetchId.value) {
+    api
+      .post("api/company/update/" + fetchId.value, data, {
+        headers: {
+          Authorization: "Bearer " + userToken.value,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          Dialog.create({
+            dark: $q.dark.isActive,
+            color: "positive",
+            title: "Success",
+            message: response.data.message,
+            persistent: true,
+          });
+          if (response.data.company.type === "active") {
+            $store.commit("company/setCompany", response.data.company);
+          }
+          companyData();
+        }
+      })
+      .then(() => {
+        $q.loading.hide();
+      })
+      .catch((error) => {
+        $q.loading.hide();
         Dialog.create({
           dark: $q.dark.isActive,
-          color: "positive",
-          title: "Success",
-          message: response.data.message,
+          color: "negative",
+          title: "Error",
+          message: error.response.data.message,
           persistent: true,
         });
-        // company.value = response.data.company;
-        $store.commit("company/setCompany", response.data.company);
-        companyData();
-      }
-    })
-    .then(() => {
-      $q.loading.hide();
-    })
-    .catch((error) => {
-      $q.loading.hide();
-      Dialog.create({
-        dark: $q.dark.isActive,
-        color: "negative",
-        title: "Error",
-        message: error.response.data.message,
-        persistent: true,
       });
-    });
+  }
+  $q.loading.hide();
 }
 
 function toggleEdit(payload) {

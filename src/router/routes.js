@@ -38,6 +38,14 @@ const routes = [
         },
       },
       {
+        path: "company/:type/:id",
+        name: "company.profile",
+        component: () => import("pages/company.vue"),
+        meta: {
+          middlewares: [auth],
+        },
+      },
+      {
         path: "/workgroup",
         name: "workgroup",
         component: () => import("pages/workgroup.vue"),

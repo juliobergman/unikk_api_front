@@ -21,6 +21,7 @@ export default boot(async ({ app }) => {
   app.component("expansion-item-company", ExpansionItemCompany);
   app.component("profile-image", ProfileImage);
   app.component("dialog-new-company", DialogNewCompany);
+
   // Transitions
   app.component("fade-bottom-transition", fadeFromBottom);
   app.component("flip-v-transition", flipV);

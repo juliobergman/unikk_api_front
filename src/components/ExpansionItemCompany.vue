@@ -10,7 +10,7 @@
         :active="
           membership.company_id == currentMembership.company_id ? true : false
         "
-        @click="switchCompany(membership.id)"
+        @click="switchMembership(membership.id)"
       >
         <q-item-section avatar>
           <q-icon name="domain" />
@@ -72,13 +72,13 @@ const userMemberships = computed({
 });
 
 function switchCompany(data) {
-  open.value = false;
   if (data.company.type == "active") {
     switchMembership(data.membership.id);
   }
 }
 
 function switchMembership(id) {
+  open.value = false;
   $q.loading.show();
   api
     .put(

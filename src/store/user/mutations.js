@@ -1,6 +1,3 @@
-import defaultState from "./state";
-console.log(defaultState);
-
 export function setAuth(state, auth) {
   state.authorized = auth;
 }

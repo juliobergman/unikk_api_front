@@ -81,7 +81,11 @@ function fetchTargets() {
 watchEffect(() => fetchTargets(currentMembership.value));
 
 function rowClick(e, row, item) {
-  console.log(row.id);
+  // row.id;
+  $router.push({
+    name: "company.profile",
+    params: { type: "target", id: row.id },
+  });
 }
 
 // Const Data

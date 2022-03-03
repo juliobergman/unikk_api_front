@@ -4,7 +4,7 @@
       <q-list padding>
         <!-- :active="item.active" -->
         <q-item
-          :to="item.to"
+          :to="{ name: item.to }"
           v-for="(item, idx) in items"
           :key="idx"
           clickable

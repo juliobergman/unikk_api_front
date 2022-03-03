@@ -91,16 +91,27 @@ function closeDrawer() {
 
 function logout() {
   $q.loading.show();
-  Cookies.remove("user_authorization");
-  Cookies.remove("user_token");
-  $store.commit("app/resetState");
-  $store.commit("company/resetState");
-  $store.commit("res/resetState");
-  $store.commit("user/resetState");
-  setTimeout(() => {
-    $q.loading.hide();
+
+  const plogout = new Promise((resolve, reject) => {
     $router.push({ name: "login" });
-  }, 200);
+    setTimeout(() => {
+      resolve();
+    }, 500);
+  })
+    .then(() => {
+      $store.commit("app/resetState");
+      $store.commit("company/resetState");
+      $store.commit("res/resetState");
+      $store.commit("user/resetState");
+      Cookies.remove("user_authorization");
+      Cookies.remove("user_token");
+    })
+    .then(() => {
+      $q.loading.hide();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 const items = [
