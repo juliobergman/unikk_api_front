@@ -4,6 +4,6 @@ export default function () {
     loading: false,
     leftDrawer: true,
     rightDrawer: false,
-    darkmode: "auto",
+    darkmode: false,
   };
 }
