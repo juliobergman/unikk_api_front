@@ -1,6 +1,9 @@
 <template>
   <q-page padding>
+    <workgroup-toolbar v-model="search" v-model:grid="gridView" />
     <q-table
+      :class="gridView ? '' : 'q-mt-md'"
+      :grid="gridView"
       flat
       :rows="workgroup"
       :columns="columns"
@@ -17,6 +20,14 @@
           </q-avatar>
         </q-td>
       </template>
+      <template v-slot:item="props">
+        <workgroup-profile-card
+          :user="props.row"
+          @click:message="messageClick(props.row)"
+          @click:info="rowClick(null, props.row, null)"
+        />
+        <!-- @click="rowClick($event, props.row, props.key)" -->
+      </template>
     </q-table>
     <div class="row justify-center q-mt-md">
       <q-pagination
@@ -28,6 +39,10 @@
         :max="pagesNumber"
         direction-links
         boundary-links
+        icon-first="keyboard_double_arrow_left"
+        icon-last="keyboard_double_arrow_right"
+        icon-prev="arrow_left"
+        icon-next="arrow_right"
       />
     </div>
   </q-page>
@@ -46,6 +61,8 @@ const $router = useRouter();
 
 // Data
 let workgroup = ref([]);
+let gridView = ref(true);
+let search = ref("");
 
 // Computed
 const currentMembership = computed({
@@ -76,12 +93,14 @@ function fetchWorkgroup() {
     $q.loading.show();
     api
       .get(
-        "api/user/workgroup?page=" +
-          pagination.value.page +
+        "api/user/workgroup?search=" +
+          search.value +
           "&sort=" +
           pagination.value.sortBy +
           "-" +
-          sortPagination.value,
+          sortPagination.value +
+          "&page=" +
+          pagination.value.page,
         {
           headers: {
             Authorization: "Bearer " + userToken.value,
@@ -129,6 +148,10 @@ function rowClick(e, row, item) {
     name: "company.profile",
     params: { type: "target", id: row.id },
   });
+}
+
+function messageClick(user) {
+  console.log(user);
 }
 
 const columns = [
